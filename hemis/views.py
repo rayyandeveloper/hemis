@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -66,6 +67,16 @@ sciences = {
     },
 
 }
+
+def update():
+    for i in sciences:
+        for x, y in sciences[i].values():
+            sc = Science.objects.get(semester=i, name=x)
+            sc.lessons_count = y
+
+            sc.save()
+
+    return HttpResponse('<h1>awdawda</h1>')
 
 
 def ret_marks(people):
