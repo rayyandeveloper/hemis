@@ -70,7 +70,7 @@ sciences = {
 
 def update(r):
     for i in sciences:
-        for x, y in sciences[i].values():
+        for x, y in sciences[i].items():
             sc = Science.objects.get(semester=i, name=x)
             sc.lessons_count = y
 
