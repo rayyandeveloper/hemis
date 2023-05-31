@@ -68,14 +68,6 @@ sciences = {
 
 }
 
-def update(r):
-    for i in sciences:
-        for x, y in sciences[i].items():
-            sc, _ = Science.objects.get_or_create(semester=i, name=x, lessons_count=y)
-
-    return HttpResponse('<h1>awdawda</h1>')
-
-
 def ret_marks(people):
     marks = {
         '1': {},
