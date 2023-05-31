@@ -68,7 +68,7 @@ sciences = {
 
 }
 
-def update():
+def update(r):
     for i in sciences:
         for x, y in sciences[i].values():
             sc = Science.objects.get(semester=i, name=x)
