@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hemis</title>
+    <link rel="stylesheet" href="{% static 'css/teacher-base.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+</head>
+<body>
+
+    <div class="modal d-none" data-modal-name="add-people">
+        <div class="modal-content">
+            <div class="close" data-modal-id="add-people">
+                &times;
+            </div>
+            <h2 class="title">O'quvchi qo'shish</h2>
+            <form method="post">{% csrf_token %}
+                <input type="hidden" name="type" value="add-people">
+
+                <div class="form-group">
+                    <input type="text" placeholder="Familiya" name="last_name">
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Ism" name="first_name">
+                </div>
+                <div class="form-group">
+                    <input type="submit">
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="modal d-none" data-modal-name="upload-marks">
+        <div class="modal-content">
+            <div class="close" data-modal-id="upload-marks">
+                &times;
+            </div>
+            <h2 class="title">Baholarni yuklash</h2>
+            <form method="post" enctype="multipart/form-data" id="form">{% csrf_token %}
+                <input type="hidden" name="type" value="upload-marks">
+                <input type="hidden" id="user-id" value="1" name="user-id">
+                <div class="form-group">
+                    <select name="semester">
+                        <option value="1">1-semester</option>
+                        <option value="2">2-semester</option>
+                        <option value="3">3-semester</option>
+                        <option value="4">4-semester</option>
+                        <option value="5">5-semester</option>
+                        <option value="6">6-semester</option>
+                        <option value="7">7-semester</option>
+                        <option value="8">8-semester</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="file" accept="application/vnd.ms-excel, .xlsx" name="excel-file">
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="btn">
+                </div>
+                <p><a href="" style="color: inherit; text-decoration: underline;" id="template-url">Andazani</a> yuklab olish</p>
+                <img src="{% static 'images/loading.svg' %}" alt="" height="30" width="30" id="loading" class="d-none">
+            </form>
+        </div>
+
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/">
+                <div class="title">
+                    Hemis Online | <span style="font-size: 20px;">{{ request.user.last_name }} {{ request.user.first_name }}</span>
+                </div>
+            </a>
+
+            <div class="left">
+                <div class="btn-logout btn-add-people open-modal" data-modal-id="add-people">O'quvchi qo'shish</div>
+                <a class="btn-logout" href="{% url 'logout' %}">Chiqish</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="d-flex">
+                <div class="id">Id</div>
+                <div class="full-name">F.I.Sh</div>
+            </div>
+        </div>
+        
+        {% for i in peoples %}
+            <div class="user">
+                <a href="{% url 'people' i.pk %}" class="d-flex">
+                    <div class="id">{{ forloop.counter }}</div>
+                    <div class="full-name">{{ i.last_name }} {{ i.first_name }}</div>
+                </a>
+                <div class="open-modal" data-modal-id="upload-marks" data-people-id="{{ i.pk }}">Baholarni yuklash</div>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{% static 'js/app.js' %}"></script>
+    <script>
+        let btn = document.querySelector('#btn'),
+        loading = document.querySelector('#loading'),
+        form = document.querySelector('#form')
+
+
+        form.addEventListener('submit', ()=> {
+            loading.classList.remove('d-none')
+        })
+
+    </script>
+</body>
+</html>

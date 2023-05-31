@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hemis</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/">
+                <div class="title">
+                    Hemis Online | <span style="font-size: 20px;">{{ request.user.last_name }}
+                        {{ request.user.first_name }}</span>
+                </div>
+            </a>
+
+            <b>{{ people.last_name }} {{ people.first_name }}</b>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% if people %}
+            {% for semester in semesters %}
+                <div class="statistic">
+                    <div class="title">
+                        {{semester}}-semester
+                    </div>
+                    <canvas id="barChart{{ semester }}"></canvas>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="error">
+                <h1>{{ error }}</h1>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="{% static 'js/chart.js'  %}"></script>
+
+    <script>
+        
+
+        function createBarChart(marks, labels, chartId) {
+            const element = document.getElementById(chartId)
+            const barChartElement = element.getContext('2d');
+
+            const x = new Chart(barChartElement, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Marks',
+                        data: marks,
+                        backgroundColor: [
+                        'rgba(255, 99, 132, 0.9)',
+                        'rgba(255, 159, 64, 0.9)',
+                        'rgba(255, 205, 86, 0.9)',
+                        'rgba(75, 192, 192, 0.9)',
+                        'rgba(54, 162, 235, 0.9)',
+                        'rgba(153, 102, 255, 0.9)',
+                        'rgba(201, 203, 207, 0.9)'
+                    ],
+                    borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
+                    ],
+                    borderWidth: 1
+                    }, ],
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 100
+                            }
+                        }]
+                    }
+                },
+            });
+        }
+
+
+        const marks = {{ marks | safe}};
+
+        let index = 0
+
+        for (const x in marks) {
+            index++
+            
+            let labels = [],
+                mk = []
+
+            for (const y in marks[x]) {
+                labels.push(y)
+                mk.push(marks[x][y])
+            }
+
+
+            createBarChart(mk, labels, `barChart${index}`);
+        }
+    </script>
+</body>
+
+</html>
